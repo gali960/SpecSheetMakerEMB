@@ -3,6 +3,8 @@ import xlsxwriter
 from datetime import datetime, timedelta
 import os
 import pandas as pd
+import win32com.client as win32
+
 
 # Dependencies: Operator, Config Matrix Values, Liveries, Maintenix Data, Reconfigurations of seats, ovens, galleys, A-CKS, C-CKS intervals,
 # Connection to intranet (e.g. via VPN)
@@ -230,7 +232,14 @@ except:
 # Main Assys info
 eng_model = 'CF34-10E5'
 path_ear = r'C:\Users\ggalina\SpecSheetMakerEMB\CF34 & APU Removals.xlsx'
-path_cm = r'C:\Users\ggalina\SpecSheetMakerEMB\Config Matrix EMB.xlsx'
+
+# Refreshing Data Sources
+xlapp = win32.DispatchEx("Excel.Application")
+wb = xlapp.Workbooks.Open(path_ear)
+wb.RefreshAll()
+xlapp.CalculateUntilAsyncQueriesDone()
+wb.Save()
+xlapp.Quit()
 
 # Engine L/H
 filt_eng_lh = df_main_assys['CONFIG_POS_SDESC'] == '71-00-00-00 (LH)'
